@@ -1,5 +1,6 @@
 #This script retrieves incidents from ServiceNow that have an empty assignment group 
-# and a short description containing "batch job failure". The results are displayed in the console 
+# and a short description containing "batch job failure", created between 14 and 28 Sept 2026.
+# The results are displayed in the console 
 # and exported to an Excel file.
 
 
@@ -94,10 +95,17 @@ def export_to_excel(incidents, filename="batch_job_incidents.xlsx"):
 # ServiceNow query
 # --------------------------------------------------
 
+# Only incidents created between 14 Sept and 28 Sept 2026 (inclusive)
+START_DATE = "2026-09-14"
+END_DATE = "2026-09-28"
+
 params = {
 
     "sysparm_query":
-        "assignment_groupISEMPTY^short_descriptionLIKEbatch job failure",
+        "assignment_groupISEMPTY"
+        "^short_descriptionLIKEbatch job failure"
+        f"^sys_created_onBETWEENjavascript:gs.dateGenerate('{START_DATE}','00:00:00')"
+        f"@javascript:gs.dateGenerate('{END_DATE}','23:59:59')",
 
     "sysparm_fields":
         "sys_id,number,short_description,assignment_group,state,sys_created_on",
